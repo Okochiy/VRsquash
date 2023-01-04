@@ -4,20 +4,25 @@ using UnityEngine;
 
 public class MoveScaler : MonoBehaviour
 {
-    [SerializeField] OVRCameraRig cameraRig;
-    [SerializeField] private float moveScale = (float)3.0;
+    [SerializeField] private GameObject centerEye;
+    [SerializeField] private float moveScale = (float)0.5;
+    int counter;
     // Start is called before the first frame update
     void Start()
     {
-        cameraRig.TrackingSpaceChanged += trackingSpace =>
-        {
-            transform.position = Vector3.Scale(trackingSpace.localPosition, new Vector3(moveScale, 0, moveScale));
-        };
         DebugUIBuilder.instance.AddLabel("start");
+        counter = 0;
     }
 
     void Update()
     {
-        DebugUIBuilder.instance.AddLabel("update");
+        counter++;
+        counter = counter % 20;
+        if (counter == 0)
+        {
+            DebugUIBuilder.instance.AddLabel($"eyelocalpos:{centerEye.transform.localPosition}\neyeworldpos:{centerEye.transform.position}");
+            DebugUIBuilder.instance.AddLabel($"playerlocalpos:{transform.localPosition}\nplayerworldpos:{transform.position}");
+        }
+        transform.position = Vector3.Scale(centerEye.transform.localPosition, new Vector3(moveScale, 0, moveScale));
     }
 }
