@@ -338,10 +338,6 @@ public class OVRCameraRig : MonoBehaviour
         if (shouldRaiseEvent)
         {
             TrackingSpaceChanged(trackingSpace);
-            /*
-            var tmp = trackingSpace.localPosition;
-            trackingSpace.localPosition = Vector3.Scale(new Vector3(3, 1, 3), tmp);
-            */
         }
     }
 
@@ -472,12 +468,6 @@ public class OVRCameraRig : MonoBehaviour
         anchor.name = name;
         anchor.parent = (root != null) ? root : transform;
         anchor.localScale = Vector3.one;
-        /*
-        if (name == trackingSpaceName)
-        {
-            anchor.localScale = new Vector3(4.0f, 1.0f, 1.0f);
-        }
-        */
         anchor.localPosition = Vector3.zero;
         anchor.localRotation = Quaternion.identity;
 
