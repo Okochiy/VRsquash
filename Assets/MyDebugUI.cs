@@ -18,6 +18,7 @@ public class MyDebugUI : MonoBehaviour
         // Bボタンでデバッグディスプレイの表示・非表示
         if (OVRInput.GetDown(OVRInput.Button.Two))
         {
+            DebugUIBuilder.instance.AddLabel("B button");
             if (inMenu) DebugUIBuilder.instance.Hide();
             else DebugUIBuilder.instance.Show();
             inMenu = !inMenu;
