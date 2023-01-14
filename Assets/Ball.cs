@@ -47,16 +47,10 @@ public class Ball : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        GameObject other = collision.gameObject;
+        Vector3 normal = collision.contacts[0].normal;
         DebugUIBuilder.instance.AddLabel("collision");
-    }
-
-    // OnCollisionEnterにする(壁のTriggerをFalseにして衝突を検知する)と、跳ね返りベクトルを自作できなくなるためこちらを採用
-    void OnTriggerEnter(Collider collider)
-    {
-        GameObject other = collider.gameObject;
-        Vector3 normal = new Vector3(0.0f, 0.0f, 0.0f);
-        
-        switch (other.tag)
+        switch(other.tag)
         {
             /*
             case "Racket":
@@ -72,6 +66,66 @@ public class Ball : MonoBehaviour
                 shot_by_player = true;
                 break;
             */
+            case "FrontWall":
+                if (state != 0) state = 2;
+                break;
+
+            case "FrontOut":
+                Out();
+                break;
+
+            case "LeftWall":
+                break;
+
+            case "LeftOut":
+                Out();
+                break;
+
+            case "RightWall":
+                break;
+
+            case "RightOut":
+                Out();
+                break;
+
+            case "BackWall":
+                break;
+
+            case "Floor":
+                DebugUIBuilder.instance.AddLabel("bounce");
+                if (state == 3)
+                {
+                    DebugUIBuilder.instance.AddLabel("not up!");
+                    state = 0;
+                }
+                if (state != 0) state = 3;
+                break;
+        }
+    }
+
+    // OnCollisionEnterにする(壁のTriggerをFalseにして衝突を検知する)と、跳ね返りベクトルを自作できなくなるためこちらを採用
+    /*
+    void OnTriggerEnter(Collider collider)
+    {
+        GameObject other = collider.gameObject;
+        Vector3 normal = new Vector3(0.0f, 0.0f, 0.0f);
+        
+        switch (other.tag)
+        {
+            
+            case "Racket":
+                if (state == 1)
+                {
+                    DebugUIBuilder.instance.AddLabel("shot before bouncing on front wall!");
+                }
+                state = 1;
+                if (shot_by_player)
+                {
+                    DebugUIBuilder.instance.AddLabel("shot twice!");
+                }
+                shot_by_player = true;
+                break;
+            
             case "FrontWall":
                 normal = new Vector3(0.0f, 0.0f, -1.0f);
                 bounce(normal, coef_wall, friction_wall);
@@ -126,4 +180,5 @@ public class Ball : MonoBehaviour
         DebugUIBuilder.instance.AddLabel($"normal:{normal}");
         calcSpin(normal);
     }
+    */
 }
