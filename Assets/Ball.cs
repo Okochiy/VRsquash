@@ -23,7 +23,7 @@ public class Ball : MonoBehaviour
     {
         Vector3 vel = this.GetComponent<Rigidbody>().velocity;
         spin = Vector3.Cross(normal, vel);
-        DebugUIBuilder.instance.AddLabel($"normal = {normal}, vel = {vel}, spin = {spin}");
+        // DebugUIBuilder.instance.AddLabel($"normal = {normal}, vel = {vel}, spin = {spin}");
     }
 
     void bounce(Vector3 normal, float coef, float friction)
@@ -38,8 +38,16 @@ public class Ball : MonoBehaviour
 
     void Out()
     {
-        state = 4;
-        DebugUIBuilder.instance.AddLabel("out!");
+        if (state != 0)
+        {
+            state = 4;
+            DebugUIBuilder.instance.AddLabel("out!");
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        DebugUIBuilder.instance.AddLabel("collision");
     }
 
     // OnCollisionEnterにする(壁のTriggerをFalseにして衝突を検知する)と、跳ね返りベクトルを自作できなくなるためこちらを採用
@@ -67,7 +75,7 @@ public class Ball : MonoBehaviour
             case "FrontWall":
                 normal = new Vector3(0.0f, 0.0f, -1.0f);
                 bounce(normal, coef_wall, friction_wall);
-                state = 2;
+                if (state != 0) state = 2;
                 break;
 
             case "FrontOut":
@@ -110,8 +118,9 @@ public class Ball : MonoBehaviour
                 if (state == 3)
                 {
                     DebugUIBuilder.instance.AddLabel("not up!");
+                    state = 0;
                 }
-                state = 3;
+                if (state != 0) state = 3;
                 break;
         }
         DebugUIBuilder.instance.AddLabel($"normal:{normal}");
