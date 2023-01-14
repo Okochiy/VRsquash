@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    int state;
+    int state;  // 0: reset, 1: racket, 2: frontwall, 3: floor, 4: out
     bool shot_by_player;  // true:player, false:opponent
     Vector3 spin;
     public float friction_wall = (float)0.9;
@@ -29,19 +29,28 @@ public class Ball : MonoBehaviour
     void bounce(Vector3 normal, float coef, float friction)
     {
         Vector3 vel = this.GetComponent<Rigidbody>().velocity;
-        float h = Mathf.Abs(Vector3.Dot(vel, normal));
-        Vector3 new_vel = friction * vel + (coef + friction) * h * normal;
+        float h = Vector3.Dot(vel, normal);
+        if (h > 0) return;
+        Vector3 new_vel = friction * vel + (coef + friction) * (-h) * normal;
         this.GetComponent<Rigidbody>().velocity = new_vel;
+        DebugUIBuilder.instance.AddLabel($"vel = {vel}, new_vel = {new_vel}");
     }
 
-    void OnCollisionEnter(Collision collision)
+    void Out()
     {
-        GameObject other = collision.gameObject;
-        Vector3 normal = collision.contacts[0].normal;
-        DebugUIBuilder.instance.AddLabel($"normal:{normal}");
-        calcSpin(normal);
+        state = 4;
+        DebugUIBuilder.instance.AddLabel("out!");
+    }
+
+    // OnCollisionEnterにする(壁のTriggerをFalseにして衝突を検知する)と、跳ね返りベクトルを自作できなくなるためこちらを採用
+    void OnTriggerEnter(Collider collider)
+    {
+        GameObject other = collider.gameObject;
+        Vector3 normal = new Vector3(0.0f, 0.0f, 0.0f);
+        
         switch (other.tag)
         {
+            /*
             case "Racket":
                 if (state == 1)
                 {
@@ -54,17 +63,48 @@ public class Ball : MonoBehaviour
                 }
                 shot_by_player = true;
                 break;
-
+            */
             case "FrontWall":
+                normal = new Vector3(0.0f, 0.0f, -1.0f);
                 bounce(normal, coef_wall, friction_wall);
                 state = 2;
                 break;
 
-            case "Wall":
+            case "FrontOut":
+                normal = new Vector3(0.0f, 0.0f, -1.0f);
+                bounce(normal, coef_wall, friction_wall);
+                Out();
+                break;
+
+            case "LeftWall":
+                normal = new Vector3(1.0f, 0.0f, 0.0f);
+                bounce(normal, coef_wall, friction_wall);
+                break;
+
+            case "LeftOut":
+                normal = new Vector3(1.0f, 0.0f, 0.0f);
+                bounce(normal, coef_wall, friction_wall);
+                Out();
+                break;
+
+            case "RightWall":
+                normal = new Vector3(-1.0f, 0.0f, 0.0f);
+                bounce(normal, coef_wall, friction_wall);
+                break;
+
+            case "RightOut":
+                normal = new Vector3(-1.0f, 0.0f, 0.0f);
+                bounce(normal, coef_wall, friction_wall);
+                Out();
+                break;
+
+            case "BackWall":
+                normal = new Vector3(0.0f, 0.0f, 1.0f);
                 bounce(normal, coef_wall, friction_wall);
                 break;
 
             case "Floor":
+                normal = new Vector3(0.0f, 1.0f, 0.0f);
                 bounce(normal, coef_floor, friction_floor);
                 DebugUIBuilder.instance.AddLabel("bounce");
                 if (state == 3)
@@ -73,12 +113,8 @@ public class Ball : MonoBehaviour
                 }
                 state = 3;
                 break;
-
-            case "OutZone":
-                bounce(normal, coef_wall, friction_wall);
-                state = 4;
-                DebugUIBuilder.instance.AddLabel("out!");
-                break;
         }
+        DebugUIBuilder.instance.AddLabel($"normal:{normal}");
+        calcSpin(normal);
     }
 }

@@ -5,11 +5,15 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ball
-  - Wall
   - FrontWall
   - Floor
   - Racket
-  - OutZone
+  - FrontOut
+  - RightWall
+  - RightOut
+  - LeftWall
+  - LeftOut
+  - BackWall
   layers:
   - Default
   - TransparentFX

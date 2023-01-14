@@ -195,7 +195,7 @@ PrefabInstance:
     - target: {fileID: -8979033323020631920, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
       propertyPath: m_TagString
-      value: OutZone
+      value: RightOut
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
@@ -255,7 +255,7 @@ PrefabInstance:
     - target: {fileID: -7910770557438867318, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
       propertyPath: m_TagString
-      value: OutZone
+      value: LeftOut
       objectReference: {fileID: 0}
     - target: {fileID: -7863242231031075669, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
@@ -275,7 +275,7 @@ PrefabInstance:
     - target: {fileID: -7038308162017458998, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
       propertyPath: m_TagString
-      value: OutZone
+      value: LeftOut
       objectReference: {fileID: 0}
     - target: {fileID: -6801499721301327211, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
@@ -290,7 +290,7 @@ PrefabInstance:
     - target: {fileID: -4922924437367817081, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
       propertyPath: m_TagString
-      value: Wall
+      value: LeftWall
       objectReference: {fileID: 0}
     - target: {fileID: -3149362495573680130, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
@@ -315,7 +315,7 @@ PrefabInstance:
     - target: {fileID: -541957637216025410, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
       propertyPath: m_TagString
-      value: OutZone
+      value: FrontOut
       objectReference: {fileID: 0}
     - target: {fileID: 839530262717737175, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
@@ -340,7 +340,7 @@ PrefabInstance:
     - target: {fileID: 1873140432689292146, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
       propertyPath: m_TagString
-      value: OutZone
+      value: RightOut
       objectReference: {fileID: 0}
     - target: {fileID: 2372890915692200698, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
@@ -355,7 +355,7 @@ PrefabInstance:
     - target: {fileID: 4452394818255536518, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
       propertyPath: m_TagString
-      value: OutZone
+      value: FrontOut
       objectReference: {fileID: 0}
     - target: {fileID: 4843869950603010791, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
@@ -390,7 +390,7 @@ PrefabInstance:
     - target: {fileID: 6442210936219675947, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
       propertyPath: m_TagString
-      value: Wall
+      value: RightWall
       objectReference: {fileID: 0}
     - target: {fileID: 6662957148812387874, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
@@ -410,12 +410,12 @@ PrefabInstance:
     - target: {fileID: 8548431483304473704, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
       propertyPath: m_TagString
-      value: Wall
+      value: BackWall
       objectReference: {fileID: 0}
     - target: {fileID: 8638924633559966625, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
       propertyPath: m_TagString
-      value: OutZone
+      value: FrontOut
       objectReference: {fileID: 0}
     - target: {fileID: 8657032705370176232, guid: dbb09194ca2dee449ac860b196cbdb7b,
         type: 3}
@@ -920,10 +920,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 528327788e3efad42ab9950be3355cee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  friction_wall: 0.9
+  friction_wall: 0.8
   coef_wall: 0.9
-  friction_floor: 0.9
-  coef_floor: 0.9
+  friction_floor: 0.8
+  coef_floor: 0.7
 --- !u!1 &562419899 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8638924633559966625, guid: 67a36b1149801ee4bb0268eededb24d6,
@@ -2009,7 +2009,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ball: {fileID: 547597140}
-  speed: 20
+  speed: 10
 --- !u!1 &1373545786 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7038308162017458998, guid: 67a36b1149801ee4bb0268eededb24d6,
