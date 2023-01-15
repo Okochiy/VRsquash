@@ -16,7 +16,7 @@ public class MoveScaler : MonoBehaviour
 
     void Update()
     {
-        
+        /*
         counter++;
         counter = counter % 20;
         if (counter == 0)
@@ -24,7 +24,7 @@ public class MoveScaler : MonoBehaviour
             DebugUIBuilder.instance.AddLabel($"eyelocalpos:{centerEye.transform.localPosition}\neyeworldpos:{centerEye.transform.position}");
             DebugUIBuilder.instance.AddLabel($"playerlocalpos:{transform.localPosition}\nplayerworldpos:{transform.position}");
         }
-        
+        */
         transform.localPosition = Vector3.Scale(centerEye.transform.localPosition, new Vector3(moveScale, 0, moveScale));
     }
 }
