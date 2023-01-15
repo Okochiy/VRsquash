@@ -133,7 +133,7 @@ public class Ball : MonoBehaviour
             hitting_flag = true;
             calc_hit = 1;
             racket_normal = other.transform.forward;
-            hitMarker.transform.parent.position = other.transform.position;
+            hitMarker.transform.parent = other.transform;
             hitMarker.transform.position = transform.position;
             hitMarker.SetActive(true);
             prev_pos = hitMarker.transform.position;
@@ -231,7 +231,8 @@ public class Ball : MonoBehaviour
             {
                 hitting_flag = false;
                 count = 0;
-                hitMarker.SetActive(false);
+                //hitMarker.SetActive(false);
+                DebugUIBuilder.instance.AddLabel("hitting_flag reset");
             }
         }
         if (calc_hit != 0)
@@ -252,6 +253,10 @@ public class Ball : MonoBehaviour
                 new_vel.y = racket_normal.y * new_vel.z / racket_normal.z;  // 上下方向も基本はラケットの向きに依存
                 */
                 GetComponent<Rigidbody>().velocity = new_vel;
+                if (OVRInput.Get(OVRInput.Button.Three))
+                {
+                    DebugUIBuilder.instance.AddLabel($"swing_vel: {vel}\nracket_normal: {racket_normal}");
+                }
             }
         }
     }

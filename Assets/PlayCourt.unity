@@ -673,7 +673,7 @@ Transform:
   m_GameObject: {fileID: 272722723}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.0336363, y: 0.314, z: 0.84}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2139,6 +2139,7 @@ GameObject:
   - component: {fileID: 2124129818}
   - component: {fileID: 2124129820}
   - component: {fileID: 2124129821}
+  - component: {fileID: 2124129822}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2202,3 +2203,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   screen: {fileID: 2101001326}
   fadeoutImage: {fileID: 2800000, guid: 3be4e2b5f79fa7e48937bc2b0ef8b90c, type: 3}
+--- !u!114 &2124129822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2124129817}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cfa395f4c2c7e84f8c2c14939c4c1c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  racketFace: {fileID: 609418625}
