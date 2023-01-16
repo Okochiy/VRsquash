@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    public static int state;  // 0: reset, 1: racket, 2: frontwall, 3: floor, 4: out
+    public static int state;  //-1: standby,  0: reset, 1: racket, 2: frontwall, 3: floor
 
     /*----ボールを打ったときの計算関連----*/
-    bool shot_by_player;  // true:player, false:opponent
+    public static bool shot_by_player;  // true:player, false:opponent
     bool hitting_flag;  //連続してボールを打たないように管理するためのもの
     int calc_hit;  //ボールを打った時の挙動を計算中かどうかのフラグ
     int count = 0;  // hitting_flagをリセットするカウント
@@ -17,6 +17,16 @@ public class Ball : MonoBehaviour
     Vector3 ball_vel;
     Vector3 racket_normal;
     /*----------------------------------*/
+    public static bool is_game;
+    static int player_score;
+    static int opponent_score;
+    int reset_count = 0;
+    [SerializeField] GameObject scoreImage;
+    [SerializeField] GameObject infoImage;
+    [SerializeField] GameObject playerScoreText;
+    [SerializeField] GameObject opponentScoreText;
+    [SerializeField] private GameObject leftHand;
+    ChangeAlpha changeScore, changeInfo;
 
     /*
     Vector3 spin;
@@ -28,11 +38,14 @@ public class Ball : MonoBehaviour
 
     void Start()
     {
-        state = 0;
+        state = -1;
         shot_by_player = false;
         hitting_flag = false;
         calc_hit = 0;
         hitMarker.SetActive(false);
+        changeScore = new ChangeAlpha(scoreImage.GetComponent<CanvasGroup>());
+        changeInfo = new ChangeAlpha(infoImage.GetComponent<CanvasGroup>());
+
         //spin = new Vector3(0, 0, 0);
     }
 
@@ -57,15 +70,21 @@ public class Ball : MonoBehaviour
 
     void Out()
     {
-        if (state != 0)
+        if (state > 0)
         {
             state = 4;
-            DebugUIBuilder.instance.AddLabel("out!");
+            //DebugUIBuilder.instance.AddLabel("out!");
+            Score(false);
         }
     }
 
     void OnCollisionEnter(Collision collision)
     {
+        if (state == -3)
+        {
+            transform.position = leftHand.transform.position;
+            GetComponent<Rigidbody>().useGravity = false;
+        }
         GameObject other = collision.gameObject;
         Vector3 normal = collision.contacts[0].normal;
         // DebugUIBuilder.instance.AddLabel("collision");
@@ -86,7 +105,7 @@ public class Ball : MonoBehaviour
                 break;
             */
             case "FrontWall":
-                if (state != 0) state = 2;
+                if (state == 1) state = 2;
                 break;
 
             case "FrontOut":
@@ -115,9 +134,21 @@ public class Ball : MonoBehaviour
                 if (state == 3)
                 {
                     DebugUIBuilder.instance.AddLabel("not up!");
-                    state = 0;
+                    Score(true);
+                }
+                if (state == 2)
+                {
+                    Score(false);
                 }
                 if (state != 0) state = 3;
+                break;
+
+            case "Opponent":
+                if (state > 0)
+                {
+                    player_score++;
+                    state = -1;
+                }
                 break;
         }
     }
@@ -141,12 +172,17 @@ public class Ball : MonoBehaviour
             {
                 DebugUIBuilder.instance.AddLabel("shot before bouncing on front wall!");
             }
-            state = 1;
-            if (shot_by_player)
+            if (state > 0)
             {
-                DebugUIBuilder.instance.AddLabel("shot twice!");
+                state = 1;
+                if (shot_by_player)
+                {
+                    DebugUIBuilder.instance.AddLabel("shot twice!");
+                    opponent_score++;
+                    state = -1;
+                }
+                shot_by_player = true;
             }
-            shot_by_player = true;
         }
         /*
         switch (other.tag)
@@ -224,6 +260,26 @@ public class Ball : MonoBehaviour
 
     void Update()
     {
+        if (state == -1)
+        {
+            playerScoreText.GetComponent<TextMesh>().text = player_score.ToString();
+            opponentScoreText.GetComponent<TextMesh>().text = opponent_score.ToString();
+            changeScore.StartFadein();
+            changeInfo.StartLoop();
+            DebugUIBuilder.instance.AddLabel("start fade in");
+            state = -2;
+        }
+        if (state == -2)
+        {
+            changeInfo.UpdateFade();
+            changeScore.UpdateFade();
+            if (OVRInput.GetDown(OVRInput.Button.Three))
+            {
+                changeScore.StartFadeout();
+                changeInfo.StartFadeout();
+                state = -3;
+            }
+        }
         if (hitting_flag)
         {
             count++;
@@ -232,17 +288,17 @@ public class Ball : MonoBehaviour
                 hitting_flag = false;
                 count = 0;
                 //hitMarker.SetActive(false);
-                DebugUIBuilder.instance.AddLabel("hitting_flag reset");
+                // DebugUIBuilder.instance.AddLabel("hitting_flag reset");
             }
         }
         if (calc_hit != 0)
         {
             calc_hit++;
-            if (calc_hit >= 3)
+            if (calc_hit >= 15)
             {
                 calc_hit = 0;
                 Vector3 new_vel = new Vector3(0.0f, 0.0f, 0.0f);
-                Vector3 vel = (hitMarker.transform.position - prev_pos) * 5;  // 1フレーム後の位置からラケットの速度を計算し、ボールのスケールに合わせる
+                Vector3 vel = (hitMarker.transform.position - prev_pos) * 8;  // 1フレーム後の位置からラケットの速度を計算し、ボールのスケールに合わせる
                 if ((vel.z > 0) != (racket_normal.z > 0)) racket_normal *= -1;  // スイングの方向にラケットの法線ベクトルを向ける
                 Vector3 ball_vel = GetComponent<Rigidbody>().velocity;
                 float vel_abs = (vel - ball_vel).magnitude;
@@ -253,11 +309,45 @@ public class Ball : MonoBehaviour
                 new_vel.y = racket_normal.y * new_vel.z / racket_normal.z;  // 上下方向も基本はラケットの向きに依存
                 */
                 GetComponent<Rigidbody>().velocity = new_vel;
-                if (OVRInput.Get(OVRInput.Button.Three))
+                /*if (OVRInput.Get(OVRInput.Button.Three))
                 {
-                    DebugUIBuilder.instance.AddLabel($"swing_vel: {vel}\nracket_normal: {racket_normal}");
-                }
+                    //DebugUIBuilder.instance.AddLabel($"swing_vel: {vel}\nracket_normal: {racket_normal}");
+                }*/
             }
         }
+
+
+        if (!shot_by_player && state == 1) gameObject.layer = 6;
+        else gameObject.layer = 0;
     }
+
+    public static void StartGame()
+    {
+        is_game = true;
+        player_score = 0;
+        opponent_score = 0;
+        state = -1;
+    }
+
+    public static void EndGame()
+    {
+        is_game = false;
+    }
+
+    void Score(bool pointByHit)
+    {
+        if (pointByHit)
+        {
+            if (shot_by_player) player_score++;
+            else opponent_score++;
+        }
+        else
+        {
+            if (shot_by_player) opponent_score++;
+            else player_score++;
+        }
+        DebugUIBuilder.instance.AddLabel($"player:{player_score}\ncpu:{opponent_score}");
+        state = -1;
+    }
+
 }

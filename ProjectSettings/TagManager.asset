@@ -14,6 +14,13 @@ TagManager:
   - LeftWall
   - LeftOut
   - BackWall
+  - Wall
+  - OutZone
+  - ScoreBoard
+  - PlayerScore
+  - CPUScore
+  - Information
+  - Opponent
   layers:
   - Default
   - TransparentFX
@@ -21,8 +28,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - AfterHitByOpponent
+  - Opponent
   - 
   - 
   - 
