@@ -7,8 +7,9 @@ public class ChangeAlpha
     // フェードさせる時間を設定
     private float fadeTime = 1f;
     // 経過時間を取得
-    private bool isFadein, isFadeout;
-    private bool loop = false;
+    public bool isFadein, isFadeout;
+    public bool loop = false;
+    public float endAlpha = 1f;
     CanvasGroup canvasGroup;
     public ChangeAlpha(CanvasGroup _canvasGroup)
     {
@@ -17,7 +18,7 @@ public class ChangeAlpha
         canvasGroup.alpha = 0;
     }
 
-    // Update is called once per frame
+
     public void UpdateFade()
     {
         // 経過時間をfadeTimeで割った値をalphaに入れる
@@ -25,9 +26,9 @@ public class ChangeAlpha
         if (isFadein)
         {
             canvasGroup.alpha += Time.deltaTime / fadeTime;
-            if (canvasGroup.alpha >= 1)
+            if (canvasGroup.alpha >= endAlpha)
             {
-                isFadein = false;
+                isFadein = false;  // フェードインが終了するとisFadeinをfalseに変更
                 if (loop)
                 {
                     isFadeout = true;
@@ -39,7 +40,7 @@ public class ChangeAlpha
             canvasGroup.alpha -= Time.deltaTime / fadeTime;
             if (canvasGroup.alpha <= 0)
             {
-                isFadeout = false;
+                isFadeout = false;  // フェードアウトが終了するとisFadeoutをfalseに変更
                 if (loop)
                 {
                     isFadein = true;
@@ -48,8 +49,9 @@ public class ChangeAlpha
         }
     }
 
-    public void StartFadein()
+    public void StartFadein(float endalpha)
     {
+        endAlpha = endalpha;
         isFadein = true;
         isFadeout = false;
         this.loop = false;
@@ -62,9 +64,9 @@ public class ChangeAlpha
         this.loop = false;
     }
 
-    public void StartLoop()
+    public void StartLoop(float endalpha)
     {
-        StartFadein();
+        StartFadein(endalpha);
         this.loop = true;
     }
 }

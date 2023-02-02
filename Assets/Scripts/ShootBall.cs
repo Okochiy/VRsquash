@@ -18,7 +18,7 @@ public class ShootBall : MonoBehaviour
             ball.GetComponent<Rigidbody>().velocity = speed * this.transform.up;
         }
         */
-        if (Ball.state == -3 && OVRInput.GetDown(OVRInput.Button.Four))
+        if (OVRInput.GetDown(OVRInput.Button.Four))
         {
             Toss();
         }
@@ -29,5 +29,6 @@ public class ShootBall : MonoBehaviour
         ball.transform.position = leftHand.transform.position;
         ball.GetComponent<Rigidbody>().useGravity = true;
         ball.GetComponent<Rigidbody>().velocity = new Vector3(0.0f, 3.0f, 0.0f);
+        Ball.state = 1;
     }
 }

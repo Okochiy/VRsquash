@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Ball : MonoBehaviour
 {
-    public static int state;  //-1: standby,  0: reset, 1: racket, 2: frontwall, 3: floor
+    public static int state;  //-3: スコアのフェードアウト, -2: スコアの表示(プレイヤーの入力待ち), -1: スコアが動いた直後,  0: reset, 1: racket, 2: frontwall, 3: floor
 
     /*----ボールを打ったときの計算関連----*/
     public static bool shot_by_player;  // true:player, false:opponent
@@ -26,7 +27,9 @@ public class Ball : MonoBehaviour
     [SerializeField] GameObject playerScoreText;
     [SerializeField] GameObject opponentScoreText;
     [SerializeField] private GameObject leftHand;
-    ChangeAlpha changeScore, changeInfo;
+    ChangeAlpha changeScore, changeInfo;  // スコアを表示するためのオブジェクト
+
+    int tmp = 0;
 
     /*
     Vector3 spin;
@@ -80,7 +83,7 @@ public class Ball : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (state == -3)
+        if (state == 0)
         {
             transform.position = leftHand.transform.position;
             GetComponent<Rigidbody>().useGravity = false;
@@ -131,16 +134,16 @@ public class Ball : MonoBehaviour
 
             case "Floor":
                 DebugUIBuilder.instance.AddLabel("bounce");
-                if (state == 3)
+                if (state == 3)   // すでにボールが1バウンドした後の場合
                 {
                     DebugUIBuilder.instance.AddLabel("not up!");
-                    Score(true);
+                    Score(true);  // 打ち返せなかったプレイヤーの失点
                 }
-                if (state == 2)
+                else if (state == 2)  // ボールが前壁に届かなかった場合
                 {
-                    Score(false);
+                    Score(false);  // それを打ったプレイヤーの失点
                 }
-                if (state != 0) state = 3;
+                else if (state > 0) state = 3;
                 break;
 
             case "Opponent":
@@ -260,25 +263,33 @@ public class Ball : MonoBehaviour
 
     void Update()
     {
-        if (state == -1)
+        if (state == -1)  // スコアの表示をスタート
         {
-            playerScoreText.GetComponent<TextMesh>().text = player_score.ToString();
-            opponentScoreText.GetComponent<TextMesh>().text = opponent_score.ToString();
-            changeScore.StartFadein();
-            changeInfo.StartLoop();
+            playerScoreText.GetComponent<Text>().text = player_score.ToString();
+            opponentScoreText.GetComponent<Text>().text = opponent_score.ToString();
+            changeScore.StartFadein(0.7f);
+            changeInfo.StartLoop(1f);
             DebugUIBuilder.instance.AddLabel("start fade in");
             state = -2;
+            return;
         }
-        if (state == -2)
+        if (state == -2)  // スコアを表示しながらプレイヤーの入力待ち
         {
             changeInfo.UpdateFade();
             changeScore.UpdateFade();
-            if (OVRInput.GetDown(OVRInput.Button.Three))
+            if (OVRInput.GetDown(OVRInput.Button.Three))  // 入力があれば-3へ遷移
             {
                 changeScore.StartFadeout();
                 changeInfo.StartFadeout();
                 state = -3;
             }
+            return;
+        }
+        if (state == -3)  // スコアのフェードアウト
+        {
+            changeInfo.UpdateFade();
+            changeScore.UpdateFade();
+            if (!(changeInfo.isFadeout || changeScore.isFadeout)) state = 0;  // スコア表示がフェードアウトしたら初期状態へ
         }
         if (hitting_flag)
         {
@@ -319,6 +330,9 @@ public class Ball : MonoBehaviour
 
         if (!shot_by_player && state == 1) gameObject.layer = 6;
         else gameObject.layer = 0;
+
+        tmp++;
+        if (tmp % 20 == 0) DebugUIBuilder.instance.AddLabel($"{state}");
     }
 
     public static void StartGame()
