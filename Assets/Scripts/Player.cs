@@ -4,56 +4,48 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private GameObject screen;
-    [SerializeField] private Texture2D fadeoutImage;
+    [SerializeField] private GameObject fadeInScreen;
     [SerializeField] private GameObject racket;
     [SerializeField] private float calib_value_pos = 0.01f;
     [SerializeField] private float calib_value_ang = 1f;
     bool fadeoutFlag, fadeinFlag, fadeinCompleted;
-    private VisualEffect visualEffect;
-    // Start is called before the first frame update
+    ChangeAlpha screenManager;
+
     void Start()
     {
         fadeoutFlag = false;
         fadeinFlag = false;
         fadeinCompleted = true;
-        visualEffect = new VisualEffect(screen.GetComponent<MeshRenderer>());
+        screenManager = new ChangeAlpha(fadeInScreen.GetComponent<CanvasGroup>());
     }
 
-    // Update is called once per frame
     void Update()
     {
 
-        if (OVRInput.GetUp(OVRInput.Button.SecondaryThumbstick))
+        if (OVRInput.GetUp(OVRInput.Button.SecondaryThumbstick))  // ééçáÇÃäJén
         {
-            fadeoutFlag = true;
-            visualEffect.startFadeOut(fadeoutImage, 0.02f);
+            fadeinFlag = true;
+            screenManager.StartFadein(1f);
             Ball.StartGame();
         }
-        if (OVRInput.GetUp(OVRInput.Button.PrimaryThumbstick) && fadeinCompleted)
+        if (OVRInput.GetUp(OVRInput.Button.PrimaryThumbstick) && fadeinCompleted)  // óßÇøà íuÇÃí≤êÆ
         {
-            fadeoutFlag = true;
-            visualEffect.startFadeOut(fadeoutImage, 0.02f);
-        }
-        if (fadeoutFlag)
-        {
-            if (visualEffect.updateFade())
-            {
-                fadeinFlag = true;
-                fadeoutFlag = false;
-                fadeinCompleted = false;
-                visualEffect.startFadeIn(0.02f);
-                transform.parent.position = -transform.localPosition;
-            }
+            fadeinFlag = true;
+            screenManager.StartFadein(1f);
         }
         if (fadeinFlag)
         {
-            if (visualEffect.updateFade())
+            screenManager.UpdateFade();
+            if (!screenManager.isFadein)
             {
+                transform.parent.position = -transform.localPosition;
+                DebugUIBuilder.instance.AddLabel("reset position");
                 fadeinFlag = false;
-                fadeinCompleted = true;
+                fadeoutFlag = true;
+                screenManager.StartFadeout();
             }
         }
+        else if (screenManager.isFadeout) screenManager.UpdateFade();
 
         CalibRacketPositionZ(OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).y);
         CalibRacketPositionY(OVRInput.Get(OVRInput.RawAxis2D.RThumbstick).y);
