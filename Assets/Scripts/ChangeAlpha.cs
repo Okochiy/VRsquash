@@ -69,4 +69,9 @@ public class ChangeAlpha
         StartFadein(endalpha);
         this.loop = true;
     }
+
+    public void Destroy()
+    {
+        canvasGroup.alpha = 0;
+    }
 }

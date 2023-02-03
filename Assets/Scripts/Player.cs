@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] private GameObject ball;
     [SerializeField] private GameObject fadeInScreen;
     [SerializeField] private GameObject racket;
     [SerializeField] private float calib_value_pos = 0.01f;
@@ -22,11 +23,12 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-        if (OVRInput.GetUp(OVRInput.Button.SecondaryThumbstick))  // 試合の開始
+        if (OVRInput.GetUp(OVRInput.Button.SecondaryThumbstick))  // 試合モードの切換え
         {
             fadeinFlag = true;
             screenManager.StartFadein(1f);
-            Ball.StartGame();
+            if (Ball.is_game) ball.GetComponent<Ball>().EndGame();
+            else ball.GetComponent<Ball>().StartGame();
         }
         if (OVRInput.GetUp(OVRInput.Button.PrimaryThumbstick) && fadeinCompleted)  // 立ち位置の調整
         {
