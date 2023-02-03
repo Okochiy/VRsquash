@@ -290,7 +290,15 @@ public class Ball : MonoBehaviour
             changeInfo.UpdateFade();
             changeScore.UpdateFade();
             if (!(changeInfo.isFadeout || changeScore.isFadeout)) state = 0;  // スコア表示がフェードアウトしたら初期状態へ
+            return;
         }
+
+
+        if (OVRInput.GetDown(OVRInput.Button.Four))
+        {
+            Toss();
+        }
+
         if (hitting_flag)
         {
             count++;
@@ -302,6 +310,7 @@ public class Ball : MonoBehaviour
                 // DebugUIBuilder.instance.AddLabel("hitting_flag reset");
             }
         }
+
         if (calc_hit != 0)
         {
             calc_hit++;
@@ -362,6 +371,14 @@ public class Ball : MonoBehaviour
         }
         DebugUIBuilder.instance.AddLabel($"player:{player_score}\ncpu:{opponent_score}");
         state = -1;
+    }
+
+    void Toss()  // サーブを打つ際のトス
+    {
+        transform.position = leftHand.transform.position;
+        GetComponent<Rigidbody>().useGravity = true;
+        GetComponent<Rigidbody>().velocity = new Vector3(0.0f, 3.0f, 0.0f);
+        state = 1;
     }
 
 }
