@@ -13,7 +13,7 @@ public class Ball : MonoBehaviour
     int calc_hit;  //ボールを打った時の挙動を計算中かどうかのフラグ
     int count = 0;  // hitting_flagをリセットするカウント
     [SerializeField] GameObject hitMarker;
-    [SerializeField] float max_speed = 1f;
+    [SerializeField] float max_speed = 10.5f;
     Vector3 prev_pos;
     Vector3 ball_vel, prev_ball_vel;
     Vector3 racket_normal;
