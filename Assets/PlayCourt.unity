@@ -791,6 +791,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d213381495c6ed6488e365323d989445, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ball: {fileID: 547597140}
+  leftWall: {fileID: 227163106}
+  rightWall: {fileID: 227163103}
+  backWall: {fileID: 227163115}
+  frontWall: {fileID: 227163110}
 --- !u!64 &400193967
 MeshCollider:
   m_ObjectHideFlags: 0
