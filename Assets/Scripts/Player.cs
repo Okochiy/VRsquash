@@ -22,15 +22,17 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-
-        if (OVRInput.GetUp(OVRInput.Button.SecondaryThumbstick))  // 試合モードの切換え
+        // 試合/フリープレイモードの切換え
+        if (OVRInput.GetUp(OVRInput.Button.SecondaryThumbstick))
         {
             fadeinFlag = true;
             screenManager.StartFadein(1f);
             if (Ball.is_game) ball.GetComponent<Ball>().EndGame();
             else ball.GetComponent<Ball>().StartGame();
         }
-        if (OVRInput.GetUp(OVRInput.Button.PrimaryThumbstick) && fadeinCompleted)  // 立ち位置の調整
+
+        // 立ち位置の調整
+        if (OVRInput.GetUp(OVRInput.Button.PrimaryThumbstick) && fadeinCompleted)
         {
             fadeinFlag = true;
             screenManager.StartFadein(1f);
@@ -49,6 +51,8 @@ public class Player : MonoBehaviour
         }
         else if (screenManager.isFadeout) screenManager.UpdateFade();
 
+
+        // ラケットの向きと位置を調整
         CalibRacketPositionZ(OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).y);
         CalibRacketPositionY(OVRInput.Get(OVRInput.RawAxis2D.RThumbstick).y);
         CalibRacketRotation(OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).x);

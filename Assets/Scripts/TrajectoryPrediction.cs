@@ -11,15 +11,16 @@ public class TrajectoryPrediction : MonoBehaviour
     [SerializeField] private GameObject frontWall;
     [SerializeField] private GameObject floor;
     public bool debug = true;
+    public static Vector3 goal;
 
     private float gravity = 9.80665f;
     private float sideBounciness, frontBounciness, backBounciness;  // 壁の跳ね返り
     private float rightlimit, leftlimit, frontlimit, backlimit; // 壁の座標
-    int count = 0;
 
     void Start()
     {
-        count = 0;
+        goal = new Vector3(0f, 0f, 0f);
+
         sideBounciness = (ball.GetComponent<Collider>().material.bounciness + leftWall.GetComponent<Collider>().material.bounciness) / 2;
         frontBounciness = (ball.GetComponent<Collider>().material.bounciness + frontWall.GetComponent<Collider>().material.bounciness) / 2;
         backBounciness = (ball.GetComponent<Collider>().material.bounciness + backWall.GetComponent<Collider>().material.bounciness) / 2;
@@ -32,17 +33,8 @@ public class TrajectoryPrediction : MonoBehaviour
 
     void Update()
     {
-        if (debug && OVRInput.GetDown(OVRInput.Button.Three))
-        {
-            DebugUIBuilder.instance.AddLabel($"front:{frontWall.transform.position}, back:{backWall.transform.position}\nright:{rightWall.transform.position}, left{leftWall.transform.position}");
-        }
-
-        count++;
-        if (count % 10 == 0 && OVRInput.Get(OVRInput.Button.Four))
-        {
-            float[] pred = PointOfBounceTwice();
-            transform.position = new Vector3(pred[0], 0f, pred[1]);
-        }
+        float[] pred = PointOfBounceTwice();
+        goal = new Vector3(pred[0], 0f, pred[1]);
     }
 
     float TimeToBounce(float height, float vel)  // 地面にバウンドするまでの時間

@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// VRãÛä‘Ç≈ÇÃà⁄ìÆó ÇëùÇ‚Ç∑
 public class MoveScaler : MonoBehaviour
 {
     [SerializeField] private GameObject centerEye;
-    [SerializeField] private float moveScale = (float)0.5;
+    [SerializeField] private float moveScale = (float)2.5;
     int counter;
 
     void Start()
@@ -16,15 +17,6 @@ public class MoveScaler : MonoBehaviour
 
     void Update()
     {
-        /*
-        counter++;
-        counter = counter % 20;
-        if (counter == 0)
-        {
-            DebugUIBuilder.instance.AddLabel($"eyelocalpos:{centerEye.transform.localPosition}\neyeworldpos:{centerEye.transform.position}");
-            DebugUIBuilder.instance.AddLabel($"playerlocalpos:{transform.localPosition}\nplayerworldpos:{transform.position}");
-        }
-        */
         transform.localPosition = Vector3.Scale(centerEye.transform.localPosition, new Vector3(moveScale, 0, moveScale));
     }
 }
