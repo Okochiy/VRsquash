@@ -110,6 +110,7 @@ public class Ball : MonoBehaviour
                 }
                 else if (state == 1)  // ボールが前壁に届かなかった場合
                 {
+                    SetPointDescription(shot_by_player, "not up!");
                     Score(false);  // それを打ったプレイヤーの失点
                 }
                 if (state == 0) HoldBall();
