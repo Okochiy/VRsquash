@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Ball : MonoBehaviour
 {
     public static int state;  //-3: スコアのフェードアウト, -2: スコアの表示(プレイヤーの入力待ち), -1: スコアが動いた直後,  0: reset, 1: racket, 2: frontwall, 3: floor
+    public static int num_bounce;  // 床にバウンドした回数。落下地点予測のため追加。
 
     /*----ボールを打ったときの計算関連----*/
     public static bool shot_by_player;  // true:player, false:opponent
@@ -43,6 +44,7 @@ public class Ball : MonoBehaviour
     void Start()
     {
         state = -1;
+        num_bounce = 0;
         shot_by_player = false;
         hitting_flag = false;
         calc_hit = 0;
@@ -86,7 +88,7 @@ public class Ball : MonoBehaviour
                 //{
                 //    DebugUIBuilder.instance.AddLabel("shot twice!");
                 //}
-                //shot_by_player = true;
+                shot_by_player = true;
                 hitting_flag = true;
                 calc_hit = 1;
                 ball_vel = prev_ball_vel;
@@ -126,12 +128,13 @@ public class Ball : MonoBehaviour
 
             case "Floor":
                 DebugUIBuilder.instance.AddLabel("bounce");
-                if (state == 3)   // すでにボールが1バウンドした後の場合
+                num_bounce++;
+                if (num_bounce == 2)   // すでにボールが1バウンドした後の場合
                 {
                     DebugUIBuilder.instance.AddLabel("not up!");
                     Score(true);  // 打ち返せなかったプレイヤーの失点
                 }
-                else if (state == 2)  // ボールが前壁に届かなかった場合
+                else if (state == 1)  // ボールが前壁に届かなかった場合
                 {
                     Score(false);  // それを打ったプレイヤーの失点
                 }
@@ -146,6 +149,7 @@ public class Ball : MonoBehaviour
                 }
                 break;
         }
+        if (state != 3) num_bounce = 0;
     }
 
     void Update()
